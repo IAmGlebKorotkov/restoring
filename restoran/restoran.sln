@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # 
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "restoran", "restoran\restoran.csproj", "{D5F16915-8C1B-4FC9-9B35-02C295649463}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restoran.Auth", "Restoran.Auth\Restoran.Auth.csproj", "{CB7839D8-0EA0-437A-91E8-9FEA23862636}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restoran.Backend", "Restoran.Backend\Restoran.Backend.csproj", "{1BE5750E-577B-452A-9F61-12D5CC615517}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D5F16915-8C1B-4FC9-9B35-02C295649463}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5F16915-8C1B-4FC9-9B35-02C295649463}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5F16915-8C1B-4FC9-9B35-02C295649463}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5F16915-8C1B-4FC9-9B35-02C295649463}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CB7839D8-0EA0-437A-91E8-9FEA23862636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CB7839D8-0EA0-437A-91E8-9FEA23862636}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB7839D8-0EA0-437A-91E8-9FEA23862636}.Release|Any CPU.ActiveCfg = Release|Any CPU

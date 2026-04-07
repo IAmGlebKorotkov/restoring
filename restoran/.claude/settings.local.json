@@ -7,7 +7,19 @@
       "Bash(rm -f /Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/Controllers/WeatherForecastController.cs /Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/WeatherForecast.cs)",
       "Bash(dotnet build:*)",
       "Bash(dotnet tool:*)",
-      "Bash(~/.dotnet/tools/dotnet-ef migrations:*)"
+      "Bash(~/.dotnet/tools/dotnet-ef migrations:*)",
+      "Bash(dotnet run:*)",
+      "Bash(echo \"Auth PID: $!\")",
+      "Bash(echo \"Backend PID: $!\")",
+      "Bash(echo \"Notifications PID: $!\")",
+      "Read(//private/tmp/**)",
+      "Bash(curl -s http://localhost:5001/swagger/v1/swagger.json)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('Auth paths:', len\\(d['paths']\\)\\)\")",
+      "Bash(curl -s http://localhost:5002/swagger/v1/swagger.json)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('Backend paths:', len\\(d['paths']\\)\\)\")",
+      "Bash(curl -s http://localhost:5003/swagger/v1/swagger.json)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('Notifications paths:', len\\(d['paths']\\)\\)\")",
+      "Bash(wait)"
     ]
   }
 }
