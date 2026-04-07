@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /Users/glebkorotkov/RiderProjects/restoran/Restoran.Backend/Models /Users/glebkorotkov/RiderProjects/restoran/Restoran.Backend/Data /Users/glebkorotkov/RiderProjects/restoran/Restoran.Backend/DTOs /Users/glebkorotkov/RiderProjects/restoran/Restoran.Backend/Services /Users/glebkorotkov/RiderProjects/restoran/Restoran.Backend/Messaging /Users/glebkorotkov/RiderProjects/restoran/Restoran.Backend/Controllers)",
+      "Bash(rm -f /Users/glebkorotkov/RiderProjects/restoran/Restoran.Backend/Controllers/WeatherForecastController.cs /Users/glebkorotkov/RiderProjects/restoran/Restoran.Backend/WeatherForecast.cs)",
+      "Bash(mkdir -p /Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/Models /Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/Data /Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/DTOs /Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/Hubs /Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/Services /Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/Controllers)",
+      "Bash(rm -f /Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/Controllers/WeatherForecastController.cs /Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/WeatherForecast.cs)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet tool:*)",
+      "Bash(~/.dotnet/tools/dotnet-ef migrations:*)"
+    ]
+  }
+}
