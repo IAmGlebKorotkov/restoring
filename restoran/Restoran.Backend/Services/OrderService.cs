@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Restoran.Backend.Data;
 using Restoran.Backend.DTOs;
@@ -151,6 +152,9 @@ public class OrderService
         if (filter.OrderId.HasValue)
             query = query.Where(o => o.Id == filter.OrderId);
 
+        if (filter.CookId.HasValue)
+            query = query.Where(o => o.CookId == filter.CookId);
+
         query = filter.SortBy switch
         {
             OrderSortBy.CreatedAtAsc => query.OrderBy(o => o.CreatedAt),
@@ -172,28 +176,40 @@ public class OrderService
     public async Task<(bool Success, string? Error)> ChangeOrderStatusAsync(
         Guid orderId, Guid actorId, OrderStatus newStatus, string actorRole)
     {
-        var order = await _db.Orders.FindAsync(orderId);
-        if (order == null) return (false, "Заказ не найден");
-
-        var allowed = (actorRole, order.Status, newStatus) switch
+        await using var tx = await _db.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+        try
         {
-            ("Cook", OrderStatus.Created, OrderStatus.Kitchen) => true,
-            ("Cook", OrderStatus.Kitchen, OrderStatus.Packaging) => true,
-            ("Courier", OrderStatus.Packaging, OrderStatus.Delivery) => true,
-            ("Courier", OrderStatus.Delivery, OrderStatus.Delivered) => true,
-            _ => false
-        };
+            var order = await _db.Orders.FindAsync(orderId);
+            if (order == null) return (false, "Заказ не найден");
 
-        if (!allowed)
-            return (false, $"Нельзя перевести заказ из {order.Status} в {newStatus} для роли {actorRole}");
+            var allowed = (actorRole, order.Status, newStatus) switch
+            {
+                ("Cook", OrderStatus.Created, OrderStatus.Kitchen) => true,
+                ("Cook", OrderStatus.Kitchen, OrderStatus.Packaging) => true,
+                ("Cook", OrderStatus.Packaging, OrderStatus.ReadyForPickup) => true,
+                ("Courier", OrderStatus.ReadyForPickup, OrderStatus.Delivery) => true,
+                ("Courier", OrderStatus.Delivery, OrderStatus.Delivered) => true,
+                ("Courier", OrderStatus.Delivery, OrderStatus.Cancelled) => true,
+                _ => false
+            };
 
-        if (actorRole == "Cook") order.CookId = actorId;
-        if (actorRole == "Courier") order.CourierId = actorId;
+            if (!allowed)
+                return (false, $"Нельзя перевести заказ из {order.Status} в {newStatus} для роли {actorRole}");
 
-        order.Status = newStatus;
-        await _db.SaveChangesAsync();
-        await _publisher.PublishOrderStatusChangedAsync(order.Id, order.UserId, order.Status);
-        return (true, null);
+            if (actorRole == "Cook") order.CookId = actorId;
+            if (actorRole == "Courier") order.CourierId = actorId;
+
+            order.Status = newStatus;
+            await _db.SaveChangesAsync();
+            await tx.CommitAsync();
+            await _publisher.PublishOrderStatusChangedAsync(order.Id, order.UserId, order.Status);
+            return (true, null);
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            return (false, "Конфликт при изменении статуса. Обновите данные и повторите попытку.");
+        }
     }
 
     public async Task<OrderPageDto> GetCourierAvailableOrdersAsync(int page, int pageSize)
@@ -201,7 +217,7 @@ public class OrderService
         var query = _db.Orders
             .Include(o => o.Restaurant)
             .Include(o => o.OrderDishes).ThenInclude(od => od.Dish)
-            .Where(o => o.Status == OrderStatus.Packaging && o.CourierId == null);
+            .Where(o => o.Status == OrderStatus.ReadyForPickup && o.CourierId == null);
 
         var total = await query.CountAsync();
         var orders = await query.OrderByDescending(o => o.CreatedAt)

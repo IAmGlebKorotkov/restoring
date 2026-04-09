@@ -1,0 +1,176 @@
+@model UsersIndexViewModel
+@{
+    ViewData["Title"] = "Пользователи";
+    var roles = new[] { "Customer", "Courier", "Manager", "Cook" };
+    int totalPages = Model.Page.TotalCount > 0 ? (int)Math.Ceiling((double)Model.Page.TotalCount / Model.PageSize) : 1;
+}
+
+<div class="d-flex align-items-center mb-4 gap-3">
+    <h2 class="mb-0">Пользователи</h2>
+    <span class="badge bg-secondary fs-6">@Model.Page.TotalCount</span>
+</div>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="search" value="@Model.Search" class="form-control" placeholder="Поиск по имени или email" />
+    </div>
+    <div class="col-md-2">
+        <select name="role" class="form-select">
+            <option value="">Все роли</option>
+            @foreach (var r in roles)
+            {
+                <option value="@r" selected="@(Model.Role == r)">@r</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="isBanned" class="form-select">
+            <option value="">Все</option>
+            <option value="false" selected="@(Model.IsBanned == false)">Активные</option>
+            <option value="true" selected="@(Model.IsBanned == true)">Заблокированные</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search me-1"></i>Найти
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-1">Сбросить</a>
+    </div>
+</form>
+
+@if (!Model.Page.Items.Any())
+{
+    <div class="alert alert-info">Пользователи не найдены.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle bg-white shadow-sm rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Пользователь</th>
+                    <th>Email</th>
+                    <th>Роли</th>
+                    <th>Зарегистрирован</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Page.Items)
+                {
+                    <tr>
+                        <td class="fw-semibold">@user.FullName</td>
+                        <td class="text-muted small">@user.Email</td>
+                        <td>
+                            @foreach (var r in user.Roles)
+                            {
+                                <span class="badge bg-secondary me-1">@r</span>
+                            }
+                        </td>
+                        <td class="small text-muted">@user.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy")</td>
+                        <td>
+                            @if (user.IsBanned)
+                            {
+                                <span class="badge bg-danger">Заблокирован</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Активен</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1 flex-wrap">
+                                @if (user.IsBanned)
+                                {
+                                    <form asp-action="Unban" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@user.Id" />
+                                        <input type="hidden" name="search" value="@Model.Search" />
+                                        <input type="hidden" name="role" value="@Model.Role" />
+                                        <input type="hidden" name="isBanned" value="@Model.IsBanned" />
+                                        <input type="hidden" name="page" value="@Model.CurrentPage" />
+                                        <button class="btn btn-sm btn-success" title="Разблокировать">
+                                            <i class="bi bi-person-check"></i>
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="Ban" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@user.Id" />
+                                        <input type="hidden" name="search" value="@Model.Search" />
+                                        <input type="hidden" name="role" value="@Model.Role" />
+                                        <input type="hidden" name="isBanned" value="@Model.IsBanned" />
+                                        <input type="hidden" name="page" value="@Model.CurrentPage" />
+                                        <button class="btn btn-sm btn-warning" title="Заблокировать">
+                                            <i class="bi bi-person-slash"></i>
+                                        </button>
+                                    </form>
+                                }
+
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" title="Изменить роль">
+                                        <i class="bi bi-shield"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        @foreach (var r in roles)
+                                        {
+                                            <li>
+                                                <form asp-action="ChangeRole" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@user.Id" />
+                                                    <input type="hidden" name="newRole" value="@r" />
+                                                    <input type="hidden" name="search" value="@Model.Search" />
+                                                    <input type="hidden" name="role" value="@Model.Role" />
+                                                    <input type="hidden" name="isBanned" value="@Model.IsBanned" />
+                                                    <input type="hidden" name="page" value="@Model.CurrentPage" />
+                                                    <button type="submit" class="dropdown-item @(user.Roles.Contains(r) ? "fw-bold" : "")">
+                                                        @r @(user.Roles.Contains(r) ? "✓" : "")
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+
+                                <form asp-action="Delete" method="post"
+                                      onsubmit="return confirm('Удалить пользователя @user.FullName?')">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <input type="hidden" name="search" value="@Model.Search" />
+                                    <input type="hidden" name="role" value="@Model.Role" />
+                                    <input type="hidden" name="isBanned" value="@Model.IsBanned" />
+                                    <input type="hidden" name="page" value="@Model.CurrentPage" />
+                                    <button class="btn btn-sm btn-danger" title="Удалить">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (totalPages > 1)
+    {
+        <nav>
+            <ul class="pagination">
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-search="@Model.Search"
+                           asp-route-role="@Model.Role"
+                           asp-route-isBanned="@Model.IsBanned"
+                           asp-route-page="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}

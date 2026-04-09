@@ -52,6 +52,7 @@ public class StaffOrderFilterDto
 {
     public List<OrderStatus>? Statuses { get; set; }
     public Guid? OrderId { get; set; }
+    public Guid? CookId { get; set; }
     public OrderSortBy SortBy { get; set; } = OrderSortBy.CreatedAtDesc;
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = 10;

@@ -1,0 +1,76 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Дашборд";
+}
+
+<h2 class="mb-4">Дашборд</h2>
+
+<div class="row g-4">
+    <div class="col-sm-4">
+        <div class="card stat-card bg-primary text-white shadow-sm">
+            <div class="card-body d-flex align-items-center gap-3 p-4">
+                <i class="bi bi-people fs-1"></i>
+                <div>
+                    <div class="fs-2 fw-bold">@Model.TotalUsers</div>
+                    <div class="small opacity-75">Всего пользователей</div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pb-3 px-4">
+                <a asp-controller="Users" asp-action="Index" class="text-white-50 small text-decoration-none">
+                    Управление <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card stat-card bg-danger text-white shadow-sm">
+            <div class="card-body d-flex align-items-center gap-3 p-4">
+                <i class="bi bi-person-slash fs-1"></i>
+                <div>
+                    <div class="fs-2 fw-bold">@Model.BannedUsers</div>
+                    <div class="small opacity-75">Заблокировано</div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pb-3 px-4">
+                <a asp-controller="Users" asp-action="Index" asp-route-isBanned="true" class="text-white-50 small text-decoration-none">
+                    Показать <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card stat-card bg-success text-white shadow-sm">
+            <div class="card-body d-flex align-items-center gap-3 p-4">
+                <i class="bi bi-building fs-1"></i>
+                <div>
+                    <div class="fs-2 fw-bold">@Model.TotalRestaurants</div>
+                    <div class="small opacity-75">Ресторанов</div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pb-3 px-4">
+                <a asp-controller="Restaurants" asp-action="Index" class="text-white-50 small text-decoration-none">
+                    Управление <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 g-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header fw-semibold">Быстрые действия</div>
+            <div class="card-body d-flex flex-column gap-2">
+                <a asp-controller="Restaurants" asp-action="Create" class="btn btn-outline-success">
+                    <i class="bi bi-plus-circle me-1"></i>Добавить ресторан
+                </a>
+                <a asp-controller="Users" asp-action="Index" asp-route-isBanned="true" class="btn btn-outline-danger">
+                    <i class="bi bi-person-slash me-1"></i>Заблокированные пользователи
+                </a>
+                <a asp-controller="Users" asp-action="Index" asp-route-role="Courier" class="btn btn-outline-secondary">
+                    <i class="bi bi-bicycle me-1"></i>Курьеры
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -49,7 +49,15 @@ public class CookController : ControllerBase
         return success ? NoContent() : BadRequest(new { message = error });
     }
 
-    /// <summary>История заказов повара</summary>
+    /// <summary>Передать заказ в доставку (Packaging -> ReadyForPickup)</summary>
+    [HttpPost("orders/{orderId}/ready")]
+    public async Task<IActionResult> MarkReadyForPickup(Guid orderId)
+    {
+        var (success, error) = await _orderService.ChangeOrderStatusAsync(orderId, GetUserId(), OrderStatus.ReadyForPickup, "Cook");
+        return success ? NoContent() : BadRequest(new { message = error });
+    }
+
+    /// <summary>История заказов, приготовленных этим поваром</summary>
     [HttpGet("orders/history")]
     public async Task<ActionResult<OrderPageDto>> GetHistory([FromQuery] StaffOrderFilterDto filter)
     {
@@ -57,6 +65,7 @@ public class CookController : ControllerBase
         if (restaurantId == null) return BadRequest("Повар не привязан к ресторану");
 
         filter.Statuses = null;
+        filter.CookId = GetUserId();
         return Ok(await _orderService.GetRestaurantOrdersAsync(restaurantId.Value, filter));
     }
 
@@ -112,7 +121,7 @@ public class CourierController : ControllerBase
         [FromQuery] int pageSize = 10)
         => Ok(await _orderService.GetCourierAvailableOrdersAsync(page, pageSize));
 
-    /// <summary>Взять заказ на доставку (Packaging -> Delivery)</summary>
+    /// <summary>Взять заказ на доставку (ReadyForPickup -> Delivery)</summary>
     [HttpPost("orders/{orderId}/take")]
     public async Task<IActionResult> TakeOrder(Guid orderId)
     {
@@ -125,6 +134,14 @@ public class CourierController : ControllerBase
     public async Task<IActionResult> DeliverOrder(Guid orderId)
     {
         var (success, error) = await _orderService.ChangeOrderStatusAsync(orderId, GetUserId(), OrderStatus.Delivered, "Courier");
+        return success ? NoContent() : BadRequest(new { message = error });
+    }
+
+    /// <summary>Отменить доставку (Delivery -> Cancelled) — если не удалось вручить</summary>
+    [HttpPost("orders/{orderId}/cancel")]
+    public async Task<IActionResult> CancelDelivery(Guid orderId)
+    {
+        var (success, error) = await _orderService.ChangeOrderStatusAsync(orderId, GetUserId(), OrderStatus.Cancelled, "Courier");
         return success ? NoContent() : BadRequest(new { message = error });
     }
 

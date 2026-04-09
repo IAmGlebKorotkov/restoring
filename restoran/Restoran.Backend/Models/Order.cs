@@ -22,6 +22,7 @@ public enum OrderStatus
     Created,
     Kitchen,
     Packaging,
+    ReadyForPickup,
     Delivery,
     Delivered,
     Cancelled

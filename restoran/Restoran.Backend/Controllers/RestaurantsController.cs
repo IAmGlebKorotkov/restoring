@@ -33,13 +33,13 @@ public class RestaurantsController : ControllerBase
 
     /// <summary>Создать ресторан</summary>
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = "Manager")]
     public async Task<ActionResult<RestaurantDto>> Create([FromBody] CreateRestaurantDto dto)
         => Ok(await _restaurantService.CreateAsync(dto));
 
     /// <summary>Обновить ресторан</summary>
     [HttpPut("{id}")]
-    [Authorize]
+    [Authorize(Roles = "Manager")]
     public async Task<ActionResult<RestaurantDto>> Update(Guid id, [FromBody] UpdateRestaurantDto dto)
     {
         var result = await _restaurantService.UpdateAsync(id, dto);
@@ -48,7 +48,7 @@ public class RestaurantsController : ControllerBase
 
     /// <summary>Удалить ресторан</summary>
     [HttpDelete("{id}")]
-    [Authorize]
+    [Authorize(Roles = "Manager")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var success = await _restaurantService.DeleteAsync(id);
@@ -88,13 +88,13 @@ public class RestaurantsController : ControllerBase
 
     /// <summary>Список сотрудников ресторана</summary>
     [HttpGet("{id}/employees")]
-    [Authorize]
+    [Authorize(Roles = "Manager")]
     public async Task<ActionResult<List<EmployeeDto>>> GetEmployees(Guid id)
         => Ok(await _restaurantService.GetEmployeesAsync(id));
 
     /// <summary>Назначить сотрудника в ресторан</summary>
     [HttpPost("{id}/employees")]
-    [Authorize]
+    [Authorize(Roles = "Manager")]
     public async Task<IActionResult> AssignEmployee(Guid id, [FromQuery] Guid userId, [FromQuery] EmployeeRole role)
     {
         var success = await _restaurantService.AssignEmployeeAsync(id, userId, role);
@@ -103,7 +103,7 @@ public class RestaurantsController : ControllerBase
 
     /// <summary>Убрать сотрудника из ресторана</summary>
     [HttpDelete("{id}/employees/{userId}")]
-    [Authorize]
+    [Authorize(Roles = "Manager")]
     public async Task<IActionResult> RemoveEmployee(Guid id, Guid userId)
     {
         var success = await _restaurantService.RemoveEmployeeAsync(id, userId);

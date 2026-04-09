@@ -88,6 +88,20 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 
+if (app.Environment.IsDevelopment())
+{
+    app.MapGet("/export-swagger", async (Swashbuckle.AspNetCore.Swagger.ISwaggerProvider swaggerProvider) =>
+    {
+        var swagger = swaggerProvider.GetSwagger("v1");
+        var sb = new System.Text.StringBuilder();
+        using var writer = new System.IO.StringWriter(sb);
+        swagger.SerializeAsV3(new Microsoft.OpenApi.Writers.OpenApiJsonWriter(writer));
+        var json = sb.ToString();
+        await System.IO.File.WriteAllTextAsync("swagger.json", json);
+        return Results.Ok("swagger.json сохранён");
+    });
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 

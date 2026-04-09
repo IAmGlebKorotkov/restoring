@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "d9MonvqDcZs=",
+  "dgSpecHash": "W2VdBpn1Nr0=",
   "success": true,
   "projectFilePath": "/Users/glebkorotkov/RiderProjects/restoran/Restoran.Notifications/Restoran.Notifications.csproj",
   "expectedPackageFiles": [
@@ -97,10 +97,7 @@
     "/Users/glebkorotkov/.nuget/packages/system.text.encoding.codepages/6.0.0/system.text.encoding.codepages.6.0.0.nupkg.sha512",
     "/Users/glebkorotkov/.nuget/packages/system.text.encodings.web/4.5.0/system.text.encodings.web.4.5.0.nupkg.sha512",
     "/Users/glebkorotkov/.nuget/packages/system.threading.channels/7.0.0/system.threading.channels.7.0.0.nupkg.sha512",
-    "/Users/glebkorotkov/.nuget/packages/system.threading.tasks/4.3.0/system.threading.tasks.4.3.0.nupkg.sha512",
-    "/Users/glebkorotkov/.nuget/packages/microsoft.netcore.app.ref/8.0.21/microsoft.netcore.app.ref.8.0.21.nupkg.sha512",
-    "/Users/glebkorotkov/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.21/microsoft.aspnetcore.app.ref.8.0.21.nupkg.sha512",
-    "/Users/glebkorotkov/.nuget/packages/microsoft.netcore.app.host.osx-arm64/8.0.21/microsoft.netcore.app.host.osx-arm64.8.0.21.nupkg.sha512"
+    "/Users/glebkorotkov/.nuget/packages/system.threading.tasks/4.3.0/system.threading.tasks.4.3.0.nupkg.sha512"
   ],
   "logs": []
 }
